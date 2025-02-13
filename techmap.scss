@@ -1,0 +1,17 @@
+┌─────────────────────┐            ┌─────────────────────┐
+│      Frontend       │            │   Mobile App        │
+│     (React)         │            │ (React Native/etc.) │
+└────────┬────────────┘            └────────────┬────────┘
+         │ (HTTPS)                              │ (HTTPS)
+         ▼                                      ▼
+  ┌───────────────────────────────────────┐
+  │            Node.js Backend            │
+  │        (NestJS REST API)              │
+  └────────┬─────────────────────┬────────┘
+           │                     │
+           │ (DB Queries)       │ (Optional caching layer - Redis)
+           ▼                     ▼
+  ┌───────────────────┐   ┌───────────────────┐
+  │  PostgreSQL DB    │   │  (Redis)          │
+  │  (Managed service)│   │  (If needed later)│
+  └───────────────────┘   └───────────────────┘
