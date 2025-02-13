@@ -1,17 +1,31 @@
-┌─────────────────────┐            ┌─────────────────────┐
-│      Frontend       │            │   Mobile App        │
-│     (React)         │            │ (React Native/etc.) │
-└────────┬────────────┘            └────────────┬────────┘
-         │ (HTTPS)                              │ (HTTPS)
-         ▼                                      ▼
-  ┌───────────────────────────────────────┐
-  │            Node.js Backend            │
-  │        (NestJS REST API)              │
-  └────────┬─────────────────────┬────────┘
-           │                     │
-           │ (DB Queries)       │ (Optional caching layer - Redis)
-           ▼                     ▼
-  ┌───────────────────┐   ┌───────────────────┐
-  │  PostgreSQL DB    │   │  (Redis)          │
-  │  (Managed service)│   │  (If needed later)│
-  └───────────────────┘   └───────────────────┘
+┌─────────────────────────────────────────┐            ┌─────────────────────────────────┐
+│            Frontend (React)             │            │      Mobile App                 │
+│   • Chakra UI Components               │            │   (React Native + Chakra Native) │
+│   • Language Learning Exercises        │            │   • Offline Learning Support     │
+│   • Progress Tracking Dashboard        │            │   • Push Notifications          │
+│   • Audio/Speech Components            │            │   • Mobile-specific UI          │
+└────────────────┬────────────────────────┘            └──────────────┬──────────────────┘
+                 │ (HTTPS/REST)                                       │ (HTTPS/REST)
+                 ▼                                                    ▼
+┌────────────────────────────────────────────────────────────────────────────────┐
+│                              NestJS Backend                                     │
+│   • User Management & Authentication                                           │
+│   • Course & Lesson Management                                                 │
+│   • Progress Tracking & Gamification                                          │
+│   • Audio Processing & Storage                                                │
+│   • Language Translation Services                                             │
+└───────────────┬────────────────────────────────────┬───────────────────────────┘
+                │                                     │
+                ▼                                     ▼
+┌────────────────────────────┐            ┌─────────────────────────────┐
+│     PostgreSQL DB          │            │           Redis              │
+│  • User Profiles           │            │  • Session Management       │
+│  • Course Content          │            │  • Leaderboards            │
+│  • Progress Data           │            │  • Caching Layer           │
+│  • Exercise Records        │            │  • Real-time Features      │
+└────────────────────────────┘            └─────────────────────────────┘
+
+Additional Services (External):
+• Cloud Storage (AWS S3/GCP Storage) - For audio files and media content
+• Speech-to-Text API - For pronunciation checking
+• Translation APIs - For content validation
