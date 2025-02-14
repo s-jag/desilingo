@@ -1,0 +1,25 @@
+<svg width="800" height="600" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Elements -->
+  <circle cx="400" cy="300" r="250" fill="#E2E8F0" opacity="0.3"/>
+  <circle cx="400" cy="300" r="200" fill="#BEE3F8" opacity="0.4"/>
+  
+  <!-- Book Shape -->
+  <path d="M300 200 L500 200 L500 400 L300 400 Z" fill="#4299E1"/>
+  <path d="M300 200 L320 180 L520 180 L500 200 Z" fill="#3182CE"/>
+  <path d="M500 200 L520 180 L520 380 L500 400 Z" fill="#2B6CB0"/>
+  
+  <!-- Text Lines -->
+  <rect x="320" y="240" width="160" height="10" rx="5" fill="white" opacity="0.8"/>
+  <rect x="320" y="270" width="140" height="10" rx="5" fill="white" opacity="0.8"/>
+  <rect x="320" y="300" width="120" height="10" rx="5" fill="white" opacity="0.8"/>
+  
+  <!-- Hindi Characters -->
+  <text x="340" y="350" font-family="Arial" font-size="24" fill="white">अ आ इ ई</text>
+  <text x="340" y="380" font-family="Arial" font-size="24" fill="white">क ख ग घ</text>
+  
+  <!-- Decorative Elements -->
+  <circle cx="250" cy="150" r="20" fill="#4299E1" opacity="0.6"/>
+  <circle cx="550" cy="450" r="30" fill="#4299E1" opacity="0.6"/>
+  <circle cx="200" cy="400" r="15" fill="#4299E1" opacity="0.6"/>
+  <circle cx="600" cy="200" r="25" fill="#4299E1" opacity="0.6"/>
+</svg> 

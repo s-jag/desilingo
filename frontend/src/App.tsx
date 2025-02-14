@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom'
 import { Box } from '@chakra-ui/react'
 import { AuthProvider } from './auth/AuthProvider'
 import { ProtectedRoute } from './auth/ProtectedRoute'
+import ProtectedLayout from './components/ProtectedLayout'
 
 // Pages
 import Landing from './pages/Landing'
@@ -23,7 +24,9 @@ function App() {
             path="/dashboard"
             element={
               <ProtectedRoute>
-                <Dashboard />
+                <ProtectedLayout>
+                  <Dashboard />
+                </ProtectedLayout>
               </ProtectedRoute>
             }
           />
@@ -31,7 +34,9 @@ function App() {
             path="/profile"
             element={
               <ProtectedRoute>
-                <Profile />
+                <ProtectedLayout>
+                  <Profile />
+                </ProtectedLayout>
               </ProtectedRoute>
             }
           />
@@ -39,7 +44,9 @@ function App() {
             path="/lesson/:lessonId"
             element={
               <ProtectedRoute>
-                <Lesson />
+                <ProtectedLayout>
+                  <Lesson />
+                </ProtectedLayout>
               </ProtectedRoute>
             }
           />
