@@ -118,10 +118,14 @@ const Navbar = () => {
           {/* Logo */}
           <Text
             as={RouterLink}
-            to="/dashboard"
+            to="/"
             fontSize="xl"
             fontWeight="bold"
             color="brand.600"
+            _hover={{
+              transform: 'scale(1.05)',
+              transition: 'transform 0.2s'
+            }}
           >
             DesiLingo
           </Text>

@@ -9,12 +9,16 @@ import {
   useColorModeValue,
   useDisclosure,
   Center,
+  Button,
+  HStack,
+  Icon,
 } from '@chakra-ui/react'
 import { Variants } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { MotionBox } from '../components/motion'
 import LevelSelectionModal from '../components/LevelSelectionModal'
 import { Language } from '../types/language'
+import { FaArrowLeft } from 'react-icons/fa'
 
 const languages: Language[] = [
   {
@@ -147,7 +151,22 @@ const LanguageSelection = () => {
   return (
     <Box py={12}>
       <Container maxW="container.xl">
-        <VStack spacing={12}>
+        <VStack spacing={12} align="stretch">
+          <Box>
+            <Button
+              leftIcon={<Icon as={FaArrowLeft} />}
+              variant="ghost"
+              colorScheme="blue"
+              onClick={() => navigate('/dashboard')}
+              _hover={{
+                transform: 'translateX(-4px)',
+                transition: 'transform 0.2s'
+              }}
+            >
+              Back to Dashboard
+            </Button>
+          </Box>
+
           <VStack spacing={4} textAlign="center">
             <Heading size="2xl" color="blue.600">
               Choose Your Language
