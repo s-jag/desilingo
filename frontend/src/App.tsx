@@ -11,6 +11,7 @@ import Dashboard from './pages/Dashboard'
 import Profile from './pages/Profile'
 import About from './pages/About'
 import Lesson from './pages/Lesson'
+import LanguageSelection from './pages/LanguageSelection'
 
 function App() {
   return (
@@ -36,6 +37,16 @@ function App() {
               <ProtectedRoute>
                 <ProtectedLayout>
                   <Profile />
+                </ProtectedLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/languages"
+            element={
+              <ProtectedRoute>
+                <ProtectedLayout>
+                  <LanguageSelection />
                 </ProtectedLayout>
               </ProtectedRoute>
             }

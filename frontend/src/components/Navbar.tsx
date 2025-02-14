@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import {
   Box,
   Flex,
@@ -13,16 +14,76 @@ import {
   Text,
   Avatar,
   Container,
+  SlideFade,
+  VStack,
+  Icon,
 } from '@chakra-ui/react'
 import { HamburgerIcon } from '@chakra-ui/icons'
+import { FaFire } from 'react-icons/fa'
 import { Link as RouterLink, useLocation } from 'react-router-dom'
 import { useAuth0 } from '@auth0/auth0-react'
+import { motion, AnimatePresence } from 'framer-motion'
+
+const MotionBox = motion(Box)
+
+const StreakNotification = ({ onClose }: { onClose: () => void }) => {
+  return (
+    <AnimatePresence>
+      <MotionBox
+        position="fixed"
+        right={4}
+        top={20}
+        initial={{ opacity: 0, y: -20, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: -20, scale: 0.95 }}
+        transition={{ duration: 0.3 }}
+        onAnimationComplete={onClose}
+      >
+        <SlideFade in={true}>
+          <Box
+            bg={useColorModeValue('white', 'gray.800')}
+            borderRadius="lg"
+            boxShadow="lg"
+            p={4}
+            maxW="sm"
+          >
+            <HStack spacing={3} align="center">
+              <Icon as={FaFire} color="orange.400" boxSize={6} />
+              <VStack align="start" spacing={0}>
+                <Text fontWeight="bold">+1 Day Streak!</Text>
+                <Text fontSize="sm" color="gray.500">
+                  Keep up the great work!
+                </Text>
+              </VStack>
+            </HStack>
+          </Box>
+        </SlideFade>
+      </MotionBox>
+    </AnimatePresence>
+  )
+}
 
 const Navbar = () => {
   const { user, logout } = useAuth0()
   const location = useLocation()
   const bgColor = useColorModeValue('white', 'gray.800')
   const borderColor = useColorModeValue('gray.200', 'gray.700')
+  const [showStreak, setShowStreak] = useState(false)
+
+  useEffect(() => {
+    // Check if this is the first login of the day
+    const lastLoginDate = localStorage.getItem('lastLoginDate')
+    const today = new Date().toDateString()
+
+    if (lastLoginDate !== today) {
+      localStorage.setItem('lastLoginDate', today)
+      setShowStreak(true)
+
+      // Update streak count
+      const currentStreak = parseInt(localStorage.getItem('streak') || '0')
+      localStorage.setItem('streak', (currentStreak + 1).toString())
+    }
+  }, [])
 
   const isActive = (path: string) => {
     return location.pathname === path
@@ -69,11 +130,11 @@ const Navbar = () => {
           <HStack spacing={8} display={{ base: 'none', md: 'flex' }}>
             <Button
               as={RouterLink}
-              to="/dashboard"
-              variant={isActive('/dashboard') ? 'solid' : 'ghost'}
-              colorScheme={isActive('/dashboard') ? 'blue' : 'gray'}
+              to="/languages"
+              variant="ghost"
+              colorScheme="blue"
             >
-              Dashboard
+              Learn New Language
             </Button>
           </HStack>
 
@@ -93,6 +154,9 @@ const Navbar = () => {
               />
             </MenuButton>
             <MenuList>
+              <MenuItem as={RouterLink} to="/dashboard">
+                Dashboard
+              </MenuItem>
               <MenuItem as={RouterLink} to="/profile">
                 Profile
               </MenuItem>
@@ -104,6 +168,17 @@ const Navbar = () => {
           </Menu>
         </Flex>
       </Container>
+
+      {/* Streak Notification */}
+      {showStreak && (
+        <StreakNotification
+          onClose={() => {
+            setTimeout(() => {
+              setShowStreak(false)
+            }, 3000)
+          }}
+        />
+      )}
     </Box>
   )
 }
