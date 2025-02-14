@@ -1,5 +1,43 @@
 # DesiLingo Technical Documentation
 
+## Recent Updates
+
+### Authentication System (February 2024)
+- Migrated to Auth0 for robust authentication
+- Implemented role-based access control
+- Added social login providers
+- Enhanced security with proper token management
+
+### Frontend Updates
+- Upgraded to Vite 5.1
+- Added Chakra UI components
+- Implemented sound effects using Howler.js
+- Enhanced responsive design
+- Added progress tracking features
+
+### Backend Updates
+- Added Auth0 integration
+- Enhanced database schema for user progress
+- Implemented secure session management
+- Added new API endpoints for lesson tracking
+
+## Architecture Overview
+
+### Frontend Stack
+- React 18.2 with TypeScript
+- Vite 5.1 for build tooling
+- Chakra UI for components
+- Auth0 for authentication
+- Howler.js for audio
+- React Router for navigation
+
+### Backend Stack
+- Node.js with Express
+- PostgreSQL database
+- Auth0 for authentication/authorization
+- Docker for containerization
+- pgAdmin for database management
+
 ## Database Design Details
 
 ### Table Relationships

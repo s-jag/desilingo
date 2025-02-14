@@ -10,10 +10,13 @@ CREATE TYPE question_type AS ENUM ('multiple_choice', 'fill_blank', 'true_false'
 -- Users table
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
+    auth0_id VARCHAR(255) UNIQUE NOT NULL,
     name VARCHAR(100) NOT NULL,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE,
     role user_role DEFAULT 'learner',
+    native_language VARCHAR(50) DEFAULT 'English',
+    learning_goal VARCHAR(50) DEFAULT 'Intermediate',
+    daily_goal INTEGER DEFAULT 30,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -107,6 +110,17 @@ CREATE TABLE user_quizzes (
     PRIMARY KEY (user_id, quiz_id)
 );
 
+-- User study time tracking table
+CREATE TABLE user_study_time (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    date DATE NOT NULL,
+    minutes_spent INTEGER NOT NULL DEFAULT 0,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, date)
+);
+
 -- Create indexes for better query performance
 CREATE INDEX idx_lessons_language ON lessons(language_id);
 CREATE INDEX idx_lesson_contents_lesson ON lesson_contents(lesson_id);
@@ -117,6 +131,8 @@ CREATE INDEX idx_user_lessons_user ON user_lessons(user_id);
 CREATE INDEX idx_user_lessons_lesson ON user_lessons(lesson_id);
 CREATE INDEX idx_user_quizzes_user ON user_quizzes(user_id);
 CREATE INDEX idx_user_quizzes_quiz ON user_quizzes(quiz_id);
+CREATE INDEX idx_user_study_time_user ON user_study_time(user_id);
+CREATE INDEX idx_user_study_time_date ON user_study_time(date);
 
 -- Create trigger function for updating timestamps
 CREATE OR REPLACE FUNCTION update_updated_at_column()
@@ -170,5 +186,10 @@ CREATE TRIGGER update_user_lessons_updated_at
 
 CREATE TRIGGER update_user_quizzes_updated_at
     BEFORE UPDATE ON user_quizzes
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_user_study_time_updated_at
+    BEFORE UPDATE ON user_study_time
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column(); 
