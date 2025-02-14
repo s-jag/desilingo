@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import {
   Box,
   Container,
@@ -20,6 +20,7 @@ import {
 } from '@chakra-ui/react'
 import { FaVolumeUp, FaCheck, FaTimes, FaArrowRight } from 'react-icons/fa'
 import { useParams, useNavigate } from 'react-router-dom'
+import { useAuth0 } from '@auth0/auth0-react'
 
 interface LessonContent {
   type: 'text' | 'audio' | 'video' | 'quiz'
@@ -33,12 +34,83 @@ const Lesson = () => {
   const { lessonId } = useParams()
   const navigate = useNavigate()
   const toast = useToast()
+  const { getAccessTokenSilently } = useAuth0()
 
   const [currentStep, setCurrentStep] = useState(0)
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null)
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null)
   const [hearts, setHearts] = useState(5)
   const [progress, setProgress] = useState(0)
+
+  // Time tracking state
+  const startTimeRef = useRef<number>(Date.now())
+  const lastUpdateRef = useRef<number>(Date.now())
+  const isActiveRef = useRef<boolean>(true)
+
+  // Track time spent
+  useEffect(() => {
+    const trackTime = async () => {
+      try {
+        const currentTime = Date.now()
+        const minutesSpent = Math.floor((currentTime - lastUpdateRef.current) / 60000)
+        
+        if (minutesSpent >= 1) {
+          const token = await getAccessTokenSilently()
+          await fetch('/api/user/track-time', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ minutes: minutesSpent }),
+          })
+          lastUpdateRef.current = currentTime
+        }
+      } catch (error) {
+        console.error('Error tracking time:', error)
+      }
+    }
+
+    const interval = setInterval(trackTime, 60000) // Check every minute
+
+    return () => {
+      clearInterval(interval)
+      // Track final time when component unmounts
+      trackTime()
+    }
+  }, [getAccessTokenSilently])
+
+  // Handle visibility change
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        isActiveRef.current = false
+        // Track time when page becomes hidden
+        const currentTime = Date.now()
+        const minutesSpent = Math.floor((currentTime - lastUpdateRef.current) / 60000)
+        if (minutesSpent >= 1) {
+          getAccessTokenSilently().then(token => {
+            fetch('/api/user/track-time', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({ minutes: minutesSpent }),
+            }).catch(console.error)
+          })
+        }
+      } else {
+        isActiveRef.current = true
+        lastUpdateRef.current = Date.now()
+      }
+    }
+
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+    }
+  }, [getAccessTokenSilently])
 
   // Mock lesson data (replace with API call)
   const lessonContent: LessonContent[] = [
@@ -113,7 +185,7 @@ const Lesson = () => {
     audio.play()
   }
 
-  const handleAnswer = (answer: string) => {
+  const handleAnswer = async (answer: string) => {
     setSelectedAnswer(answer)
     const current = lessonContent[currentStep]
     
@@ -124,6 +196,25 @@ const Lesson = () => {
       if (!isAnswerCorrect) {
         setHearts(prev => prev - 1)
         if (hearts <= 1) {
+          // Track time before navigating away
+          const currentTime = Date.now()
+          const minutesSpent = Math.floor((currentTime - lastUpdateRef.current) / 60000)
+          if (minutesSpent >= 1) {
+            try {
+              const token = await getAccessTokenSilently()
+              await fetch('/api/user/track-time', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ minutes: minutesSpent }),
+              })
+            } catch (error) {
+              console.error('Error tracking time:', error)
+            }
+          }
+          
           toast({
             title: 'Lesson Failed',
             description: 'You ran out of hearts. Try again!',
@@ -136,13 +227,32 @@ const Lesson = () => {
     }
   }
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (currentStep < lessonContent.length - 1) {
       setCurrentStep(prev => prev + 1)
       setSelectedAnswer(null)
       setIsCorrect(null)
       setProgress((currentStep + 1) * (100 / lessonContent.length))
     } else {
+      // Track time before completing the lesson
+      const currentTime = Date.now()
+      const minutesSpent = Math.floor((currentTime - lastUpdateRef.current) / 60000)
+      if (minutesSpent >= 1) {
+        try {
+          const token = await getAccessTokenSilently()
+          await fetch('/api/user/track-time', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ minutes: minutesSpent }),
+          })
+        } catch (error) {
+          console.error('Error tracking time:', error)
+        }
+      }
+
       toast({
         title: 'Lesson Completed!',
         description: 'Great job! You completed this lesson.',

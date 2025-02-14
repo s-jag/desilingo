@@ -1,112 +1,59 @@
-import { useState } from 'react'
 import {
   Box,
   Button,
   Container,
-  FormControl,
-  FormLabel,
   Heading,
-  Input,
   VStack,
   Text,
   Link,
-  useToast,
 } from '@chakra-ui/react'
-import { Link as RouterLink, useNavigate } from 'react-router-dom'
+import { Link as RouterLink } from 'react-router-dom'
+import { useAuth0 } from '@auth0/auth0-react'
+import { FaGoogle } from 'react-icons/fa'
 
 const Login = () => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  const navigate = useNavigate()
-  const toast = useToast()
+  const { loginWithRedirect, isAuthenticated, isLoading } = useAuth0()
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
+  if (isLoading) {
+    return null
+  }
 
-    try {
-      // TODO: Implement actual login logic here
-      console.log('Login attempt with:', { email, password })
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      toast({
-        title: 'Login successful!',
-        status: 'success',
-        duration: 3000,
-        isClosable: true,
-      })
-      
-      navigate('/dashboard')
-    } catch (error) {
-      toast({
-        title: 'Login failed',
-        description: 'Please check your credentials and try again.',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      })
-    } finally {
-      setIsLoading(false)
-    }
+  if (isAuthenticated) {
+    return <RouterLink to="/dashboard" />
   }
 
   return (
     <Container maxW="container.sm" py={20}>
       <VStack spacing={8} align="stretch">
         <VStack spacing={3} align="center">
-          <Heading size="xl">Welcome Back</Heading>
+          <Heading size="xl">Welcome to DesiLingo</Heading>
           <Text color="gray.600">
             Continue your language learning journey
           </Text>
         </VStack>
 
         <Box
-          as="form"
-          onSubmit={handleSubmit}
           p={8}
           bg="white"
           borderRadius="lg"
           boxShadow="sm"
         >
           <VStack spacing={4}>
-            <FormControl isRequired>
-              <FormLabel>Email address</FormLabel>
-              <Input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
-              />
-            </FormControl>
-
-            <FormControl isRequired>
-              <FormLabel>Password</FormLabel>
-              <Input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
-              />
-            </FormControl>
-
             <Button
-              type="submit"
+              leftIcon={<FaGoogle />}
               colorScheme="blue"
               size="lg"
               width="full"
-              isLoading={isLoading}
+              onClick={() => loginWithRedirect()}
             >
-              Sign In
+              Sign in with Google
             </Button>
           </VStack>
         </Box>
 
         <Text textAlign="center">
           Don't have an account?{' '}
-          <Link as={RouterLink} to="/signup" color="blue.500">
+          <Link as={RouterLink} to="/" color="blue.500">
             Sign up
           </Link>
         </Text>

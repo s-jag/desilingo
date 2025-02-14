@@ -1,8 +1,16 @@
 import { Box, Button, Container, Heading, Text, VStack, HStack, Image, useColorModeValue } from '@chakra-ui/react'
 import { Link as RouterLink } from 'react-router-dom'
+import { useAuth0 } from '@auth0/auth0-react'
 
 const Landing = () => {
   const bgColor = useColorModeValue('white', 'gray.800')
+  const { loginWithRedirect, logout, isAuthenticated, isLoading } = useAuth0()
+
+  const handleSignup = () => {
+    loginWithRedirect({
+      appState: { returnTo: '/dashboard' }
+    })
+  }
 
   return (
     <Box>
@@ -12,12 +20,25 @@ const Landing = () => {
           <HStack justify="space-between">
             <Heading size="md" color="brand.600">DesiLingo</Heading>
             <HStack spacing={4}>
-              <Button as={RouterLink} to="/login" variant="ghost">
-                Login
-              </Button>
-              <Button as={RouterLink} to="/login" colorScheme="blue">
-                Get Started
-              </Button>
+              {!isLoading && (
+                isAuthenticated ? (
+                  <>
+                    <Button as={RouterLink} to="/dashboard" variant="ghost">
+                      Dashboard
+                    </Button>
+                    <Button
+                      onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
+                      colorScheme="blue"
+                    >
+                      Logout
+                    </Button>
+                  </>
+                ) : (
+                  <Button onClick={handleSignup} colorScheme="blue">
+                    Get Started
+                  </Button>
+                )
+              )}
             </HStack>
           </HStack>
         </Container>
@@ -33,24 +54,38 @@ const Landing = () => {
             Master Hindi, Tamil, Telugu, and more through interactive lessons, games, and real-world conversations.
           </Text>
           <HStack spacing={4}>
-            <Button
-              as={RouterLink}
-              to="/login"
-              size="lg"
-              colorScheme="blue"
-              px={8}
-            >
-              Start Learning Free
-            </Button>
-            <Button
-              as={RouterLink}
-              to="/about"
-              size="lg"
-              variant="outline"
-              px={8}
-            >
-              Learn More
-            </Button>
+            {!isAuthenticated && (
+              <>
+                <Button
+                  onClick={handleSignup}
+                  size="lg"
+                  colorScheme="blue"
+                  px={8}
+                >
+                  Start Learning Free
+                </Button>
+                <Button
+                  as={RouterLink}
+                  to="/about"
+                  size="lg"
+                  variant="outline"
+                  px={8}
+                >
+                  Learn More
+                </Button>
+              </>
+            )}
+            {isAuthenticated && (
+              <Button
+                as={RouterLink}
+                to="/dashboard"
+                size="lg"
+                colorScheme="blue"
+                px={8}
+              >
+                Go to Dashboard
+              </Button>
+            )}
           </HStack>
         </VStack>
       </Container>
