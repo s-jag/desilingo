@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: desilingo_db
+    environment:
+      POSTGRES_DB: desilingo
+      POSTGRES_USER: desilingo_user
+      POSTGRES_PASSWORD: desilingo_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/database/schema.sql:/docker-entrypoint-initdb.d/1-schema.sql
+      - ./backend/database/seed.sql:/docker-entrypoint-initdb.d/2-seed.sql
+    networks:
+      - desilingo_network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: desilingo_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@desilingo.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - desilingo_network
+
+volumes:
+  postgres_data:
+
+networks:
+  desilingo_network:
+    driver: bridge 
