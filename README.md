@@ -10,6 +10,9 @@ DesiLingo is a modern web application designed to help users learn Indian langua
 - Quizzes and assessments
 - User profile management
 - Responsive design for all devices
+- Daily streak tracking with animated notifications
+- Intuitive navigation with quick access to learning materials
+- Dark/light mode support
 
 ## 🏗 Technology Stack
 
@@ -102,6 +105,7 @@ desilingo/
 - Docker and Docker Compose
 - Node.js 18+ and npm
 - Git
+- Auth0 account (for authentication)
 
 ### Installation
 
@@ -111,12 +115,30 @@ git clone https://github.com/yourusername/desilingo.git
 cd desilingo
 ```
 
-2. Start the database and pgAdmin:
+2. Set up environment variables:
+
+Frontend (.env in frontend directory):
+```
+VITE_API_URL=http://localhost:3000
+VITE_AUTH0_DOMAIN=your-auth0-domain
+VITE_AUTH0_CLIENT_ID=your-auth0-client-id
+VITE_AUTH0_AUDIENCE=your-auth0-api-identifier
+```
+
+Backend (.env in backend directory):
+```
+PORT=3000
+DATABASE_URL=postgres://desilingo_user:desilingo_password@localhost:5432/desilingo
+AUTH0_ISSUER_BASE_URL=https://your-auth0-domain/
+AUTH0_AUDIENCE=your-auth0-api-identifier
+```
+
+3. Start the database and pgAdmin:
 ```bash
 docker-compose up -d
 ```
 
-3. Install frontend dependencies:
+4. Install frontend dependencies:
 ```bash
 cd frontend
 npm install
