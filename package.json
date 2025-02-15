@@ -1,0 +1,17 @@
+{
+  "name": "desilingo",
+  "version": "1.0.0",
+  "description": "Indian Language Learning Platform",
+  "scripts": {
+    "start": "concurrently \"npm run start:frontend\" \"npm run start:backend\" \"npm run start:db\"",
+    "start:frontend": "cd frontend && npm run dev",
+    "start:backend": "cd backend && npm run dev",
+    "start:db": "docker compose up -d",
+    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install",
+    "build": "cd frontend && npm run build && cd ../backend && npm run build",
+    "test": "concurrently \"cd frontend && npm test\" \"cd backend && npm test\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+} 

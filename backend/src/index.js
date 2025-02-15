@@ -184,33 +184,17 @@ app.get('/api/user/stats', checkJwt, async (req, res) => {
       `WITH daily_stats AS (
          SELECT 
            CASE 
-             WHEN date >= CURRENT_DATE - INTERVAL '7 days' 
-             THEN minutes_spent 
+             WHEN ust.date >= CURRENT_DATE - INTERVAL '7 days' 
+             THEN ust.minutes_spent 
              ELSE 0 
            END as last_week_minutes,
-           minutes_spent as total_minutes,
-           date
-         FROM user_study_time
-         WHERE user_id = $1
+           ust.minutes_spent as total_minutes
+         FROM user_study_time ust
+         WHERE ust.user_id = $1
        )
        SELECT 
-         COALESCE(SUM(total_minutes) / 60.0, 0) as total_hours_spent,
-         COALESCE(SUM(last_week_minutes) / 60.0, 0) as last_week_hours,
-         COALESCE(AVG(CASE WHEN date >= CURRENT_DATE - INTERVAL '30 days' THEN minutes_spent ELSE NULL END), 0) as avg_daily_minutes,
-         COALESCE(
-           (SELECT COUNT(*) 
-            FROM (
-              SELECT DISTINCT date 
-              FROM user_study_time 
-              WHERE user_id = $1 
-                AND date > CURRENT_DATE - INTERVAL '30 days'
-                AND date <= CURRENT_DATE
-                AND minutes_spent >= (SELECT daily_goal FROM users WHERE id = $1)
-              ORDER BY date DESC
-            ) as consecutive_days
-            WHERE date = CURRENT_DATE - (ROW_NUMBER() OVER (ORDER BY date DESC) - 1)::INTEGER
-           ), 0
-         ) as days_streak
+         COALESCE(SUM(last_week_minutes), 0) as last_week_minutes,
+         COALESCE(SUM(total_minutes), 0) as total_minutes
        FROM daily_stats`,
       [userId]
     )

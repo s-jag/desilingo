@@ -36,43 +36,58 @@ This guide will help you set up and run the DesiLingo application locally.
    AUTH0_AUDIENCE=your-auth0-api-identifier
    ```
 
-3. **Start Database**
+3. **Install Dependencies**
    ```bash
-   docker compose up -d
+   npm run install:all
    ```
-
-4. **Install Dependencies**
-
-   a. Frontend:
-   ```bash
-   cd frontend
-   npm install
-   ```
-
-   b. Backend:
-   ```bash
-   cd backend
-   npm install
-   ```
+   This command will install:
+   - Root level dependencies (concurrently)
+   - Frontend dependencies
+   - Backend dependencies
 
 ## Running the Application
 
-1. **Start Backend Server**
-   ```bash
-   cd backend
-   npm run dev
-   ```
+### Full Stack Development
 
-2. **Start Frontend Development Server**
-   ```bash
-   cd frontend
-   npm run dev
-   ```
+To start the entire application stack:
+```bash
+npm start
+```
 
-3. **Access the Application**
-   - Frontend: http://localhost:5173
-   - Backend API: http://localhost:3000
-   - Database Admin (pgAdmin): http://localhost:5050
+This single command will start:
+- Frontend development server
+- Backend API server
+- PostgreSQL database and pgAdmin
+
+The following services will be available:
+- Frontend: http://localhost:5173
+- Backend API: http://localhost:3000
+- Database Admin (pgAdmin): http://localhost:5050
+
+### Individual Component Start
+
+If you need to start components individually:
+
+```bash
+# Start only the database
+npm run start:db
+
+# Start only the frontend
+npm run start:frontend
+
+# Start only the backend
+npm run start:backend
+```
+
+### Available Scripts
+
+- `npm start` - Start all services
+- `npm run install:all` - Install all dependencies
+- `npm run build` - Build both frontend and backend
+- `npm test` - Run tests for both frontend and backend
+- `npm run start:frontend` - Start only the frontend
+- `npm run start:backend` - Start only the backend
+- `npm run start:db` - Start only the database
 
 ## Auth0 Setup
 
@@ -106,7 +121,7 @@ This guide will help you set up and run the DesiLingo application locally.
    - Clear node_modules and reinstall: 
      ```bash
      rm -rf node_modules
-     npm install
+     npm run install:all
      ```
 
 ## Development Workflow

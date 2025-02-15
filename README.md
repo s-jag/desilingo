@@ -133,16 +133,34 @@ AUTH0_ISSUER_BASE_URL=https://your-auth0-domain/
 AUTH0_AUDIENCE=your-auth0-api-identifier
 ```
 
-3. Start the database and pgAdmin:
+3. Install all dependencies:
 ```bash
-docker-compose up -d
+npm run install:all
 ```
 
-4. Install frontend dependencies:
+4. Start the application:
 ```bash
-cd frontend
-npm install
-npm run dev
+npm start
+```
+
+This will start:
+- Frontend development server (http://localhost:5173)
+- Backend API server (http://localhost:3000)
+- PostgreSQL database and pgAdmin (http://localhost:5050)
+
+### Individual Component Start Commands
+
+If you need to start components individually:
+
+```bash
+# Start only the database
+npm run start:db
+
+# Start only the frontend
+npm run start:frontend
+
+# Start only the backend
+npm run start:backend
 ```
 
 ### Database Access
